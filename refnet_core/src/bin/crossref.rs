@@ -12,6 +12,4 @@ fn main() {
     let now = Instant::now();
     let _ = client.work("10.1016/j.jempfin.2023.101439");
     dbg!(now.elapsed().as_secs_f64());
-
-    // println!("{work:?}");
 }

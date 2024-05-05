@@ -68,8 +68,6 @@ pub async fn extend(doi: Doi, max_counts: usize) -> Vec<Literature> {
             break;
         }
 
-        println!("{dois:?}");
-
         let dois_to_query: Vec<Doi> = dois
             .drain(..CONCURRENCY.min(dois.len()))
             .map(|doi| {

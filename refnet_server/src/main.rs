@@ -17,8 +17,6 @@ fn main() {
 }
 
 async fn inner_main() {
-    std::env::set_var("RUST_LOG", "debug");
-    
     let local_addr = match std::env::var("LOCAL_ADDR") {
         Ok(addr) => addr.leak(),
         Err(_) => {
