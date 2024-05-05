@@ -30,6 +30,8 @@
 
 <script setup>
 import { ref } from 'vue';
+const apiURL = import.meta.env.VITE_API_URL;
+
 const doi = ref('10.1038/s41586-024-07336-w');
 // const searchResult = ref(null);
 const alpha = ref(0.9);
@@ -40,7 +42,7 @@ const best_num = ref(20);
 const searchResult = ref([]);
 
 async function search() {
-  const url = 'http://127.0.0.1:3030/refnet/doi';
+  const url = apiURL + '/refnet/doi';
   const params = {
     doi: doi.value,
     extend_num: extend_num.value,
