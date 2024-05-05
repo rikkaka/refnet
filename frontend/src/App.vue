@@ -5,6 +5,7 @@
       <el-button type="primary" @click="search" class="search-button">
         检索
       </el-button>
+      <span v-if="isLoading" class="spinner"></span>
     </div>
 
     <div class="params-container">
@@ -39,7 +40,10 @@ const best_num = ref(20);
 
 const searchResult = ref([]);
 
+const isLoading = ref(false);
+
 async function search() {
+  isLoading.value = true;
   const url = apiURL + '/refnet/doi';
   const params = {
     doi: doi.value,
@@ -57,6 +61,8 @@ async function search() {
     searchResult.value = data;
   } catch (error) {
     console.error('Error:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -67,9 +73,11 @@ import GraphChart from './components/GraphChart.vue';
 
 <style scoped>
 .search-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 320px 100px 40px;
   align-items: center;
   justify-content: center;
+  /* padding-left: 10px; */
   margin-top: 30px;
   margin-bottom: 18px;
 }
@@ -85,8 +93,6 @@ import GraphChart from './components/GraphChart.vue';
 
 .param-input {
   width: 50px;
-  margin-right: 30px;
-  margin-left: 5px;
 }
 
 .search-input {
@@ -112,5 +118,28 @@ import GraphChart from './components/GraphChart.vue';
   justify-content: center;
   align-items: center;
   border: #1e5d14 solid 1px;
+}
+
+ /* 会旋转的spinner */
+.spinner {
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.hide {
+  display: none;
 }
 </style>
