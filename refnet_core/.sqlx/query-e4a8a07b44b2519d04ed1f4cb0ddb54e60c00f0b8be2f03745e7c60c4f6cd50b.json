@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        INSERT INTO literatures (doi, title, authors, year, refs)\n        VALUES (?, ?, ?, ?, ?)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "e4a8a07b44b2519d04ed1f4cb0ddb54e60c00f0b8be2f03745e7c60c4f6cd50b"
+}

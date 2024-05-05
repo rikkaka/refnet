@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "refnet_core",
+    "refnet_server",
+]
+resolver = "2"
