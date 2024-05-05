@@ -24,7 +24,6 @@
     <div class="graph-container">
       <GraphChart :nodes="searchResult" :key="searchResult"/>
     </div>
-    <pre class="search-result">{{ searchResult }}</pre>
   </el-config-provider>
 </template>
 
@@ -33,7 +32,6 @@ import { ref } from 'vue';
 const apiURL = import.meta.env.VITE_API_URL;
 
 const doi = ref('10.1038/s41586-024-07336-w');
-// const searchResult = ref(null);
 const alpha = ref(0.9);
 const decay_factor = ref(0.08);
 const extend_num = ref(500);
