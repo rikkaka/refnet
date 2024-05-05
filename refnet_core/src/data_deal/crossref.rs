@@ -14,6 +14,10 @@ fn create_client() -> Crossref {
 }
 
 pub fn query_doi(doi: &str, current_year: i32) -> Option<Literature> {
+    if doi.contains("arXiv") {
+        return None;
+    }
+
     let client = create_client();
     let work = match client.work(doi) {
         Ok(work) => work,
