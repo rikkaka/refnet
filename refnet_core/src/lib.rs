@@ -1,4 +1,3 @@
-use cached::proc_macro::cached;
 use hashbrown::HashSet;
 
 pub mod cite_rank;
