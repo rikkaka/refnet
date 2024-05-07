@@ -30,6 +30,8 @@ pub async fn from_doi(req: &mut Request, res: &mut Response) -> Result<()> {
         res
     );
 
+    let extend_num = extend_num.min(1000);
+
     let lits = doi_to_best_literatures(doi, extend_num, best_num, alpha, decay_factor).await;
     res.render(Json(lits));
 

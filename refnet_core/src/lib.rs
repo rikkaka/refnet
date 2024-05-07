@@ -4,7 +4,7 @@ pub mod cite_rank;
 pub mod data_deal;
 pub mod types;
 
-pub const CONCURRENCY: usize = 30;
+pub const CONCURRENCY: usize = 40;
 const YEAR: i32 = 2024;
 
 pub async fn doi_to_best_literatures(
@@ -14,7 +14,7 @@ pub async fn doi_to_best_literatures(
     alpha: f64,
     decay_factor: f64,
 ) -> Vec<types::BriefLiterature> {
-    let lits = data_deal::extend(doi, extext_num).await;
+    let lits = data_deal::extend(doi, extext_num, CONCURRENCY).await;
 
     let mut cite_rank = cite_rank::CiteRankBuilder::new(lits, alpha, decay_factor).build();
     cite_rank.renew_iteration(30);
