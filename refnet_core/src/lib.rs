@@ -1,3 +1,4 @@
+use cached::proc_macro::cached;
 use hashbrown::HashSet;
 
 pub mod cite_rank;
@@ -9,12 +10,12 @@ const YEAR: i32 = 2024;
 
 pub async fn doi_to_best_literatures(
     doi: String,
-    extext_num: usize,
+    extend_num: usize,
     best_num: usize,
     alpha: f64,
     decay_factor: f64,
 ) -> Vec<types::BriefLiterature> {
-    let lits = data_deal::extend(doi, extext_num, CONCURRENCY).await;
+    let lits = data_deal::extend(doi, extend_num, CONCURRENCY).await;
 
     let mut cite_rank = cite_rank::CiteRankBuilder::new(lits, alpha, decay_factor).build();
     cite_rank.renew_iteration(30);
