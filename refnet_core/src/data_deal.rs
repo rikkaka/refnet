@@ -43,7 +43,7 @@ pub async fn query_doi(doi: &str) -> Option<Literature> {
     query_doi_crossref(doi).await
 }
 
-pub async fn query_dois(dois: &Vec<Doi>) -> Vec<Literature> {
+pub async fn query_dois(dois: &[Doi]) -> Vec<Literature> {
     // let mut lits = vec![];
     let join_handles = dois
         .into_iter()
@@ -124,7 +124,9 @@ pub async fn extend(doi: Doi, max_counts: usize, workers: usize) -> Vec<Literatu
             })
             .unwrap_or_default();
 
-        if lits.len() >= max_counts || new_dois.len() == 0 && working_workers_counter.load(Ordering::Relaxed) == 0 {
+        if lits.len() >= max_counts
+            || new_dois.len() == 0 && working_workers_counter.load(Ordering::Relaxed) == 0
+        {
             break;
         }
 
@@ -135,41 +137,4 @@ pub async fn extend(doi: Doi, max_counts: usize, workers: usize) -> Vec<Literatu
     }
 
     lits
-
-    // while counter < max_counts {
-    //     // split ad CUNCURRENCY
-    //     if dois.len() == 0 {
-    //         break;
-    //     }
-
-    //     let dois_to_query: Vec<Doi> = dois
-    //         .drain(..CONCURRENCY.min(dois.len()))
-    //         .map(|doi| {
-    //             queried_dois.insert(doi.clone());
-    //             doi
-    //         })
-    //         .collect();
-
-    //     counter += dois_to_query.len();
-    //     let new_lits = query_dois(&dois_to_query).await;
-    //     lits.extend(new_lits.clone());
-
-    //     let new_dois = collect_ref_dois(&new_lits);
-    //     let new_dois: Vec<Doi> = new_dois
-    //         .into_iter()
-    //         .unique()
-    //         .take(max_counts - counter)
-    //         .filter(|doi| !queried_dois.contains(doi))
-    //         .collect();
-
-    //     dois.extend(new_dois);
-    // }
-
-    // lits
-}
-
-fn collect_refs_dois(lits: &Vec<Literature>) -> Vec<Doi> {
-    lits.iter()
-        .flat_map(|lit| lit.refs.iter().map(|ref_| ref_.doi.clone()))
-        .collect()
 }

@@ -39,3 +39,13 @@ impl From<Literature> for BriefLiterature {
         }
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LiteratureRet {
+    pub doi: String,
+    pub title: String,
+    pub author: String,
+    pub year: Option<i32>,
+    pub refs: Vec<String>,
+    pub score: f64,
+}

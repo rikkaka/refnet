@@ -5,8 +5,10 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.82"
+futures = "0.3.30"
+lazy_static = "1.4.0"
 refnet_core = { path = "../refnet_core" }
-salvo = { version = "0.67.1", features = ["anyhow", "proxy"] }
+salvo = { version = "0.67.1", features = ["anyhow", "proxy", "websocket"] }
 serde = "1.0.200"
 thiserror = "1.0.59"
 tokio = { version = "1.37.0", features = ["full"] }

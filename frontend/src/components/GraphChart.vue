@@ -1,24 +1,10 @@
 <template>
-  <div ref="chartContainer" style="width: 100%; height: 700px;"></div>
-  <el-dialog v-model="dialogVisible" title="文献详情" width="500">
-        <span>{{ clickedNode }}</span>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button @click="closeDialog">关闭</el-button>
-                <el-button type="primary" @click="closeDialog">
-                    前往文献网页
-                </el-button>
-            </div>
-        </template>
-    </el-dialog>
+  <div ref="chartContainer" class="chart-container"></div>
 </template>
 
 <script setup>
 import { onMounted, ref, watchEffect } from 'vue';
 import * as echarts from 'echarts';
-
-const dialogVisible = ref(false);
-const clickedNode = ref(null);
 
 const props = defineProps({
   nodes: Array
@@ -40,6 +26,7 @@ watchEffect(() => {
 function prepareGraphData(nodes) {
   let data = [];
   let links = [];
+  let score_sum = nodes.reduce((acc, node) => acc + node.score, 0);
 
   nodes.forEach(node => {
     let author = node.author;
@@ -49,7 +36,8 @@ function prepareGraphData(nodes) {
     data.push({
       name: node.doi,
       draggable: true,
-      symbolSize: 60,
+      symbolSize: node.score/score_sum * nodes.length * 60,
+      // symbolSize: 60,
       itemStyle: {
         color: 'lightblue',
         borderColor: 'black',
@@ -114,7 +102,7 @@ function createChart() {
             color: 'grey',
             opacity: 0.5, 
             width: 2,
-            curveness: 0.2
+            // curveness: 0.
           },
           emphasis: {
             focus: 'adjacency', 
@@ -137,13 +125,16 @@ function createChart() {
     });
   }
 }
-
-function openDialog(node) {
-  clickedNode.value = node;
-  dialogVisible.value = true;
-}
-
-function closeDialog() {
-  dialogVisible.value = false;
-}
 </script>
+
+<style scoped>
+.chart-container {
+  /* 居中 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90vw;
+  height: 700px;
+  border: #1e5d14 solid 1px;
+}
+</style>

@@ -1,11 +1,27 @@
-use hashbrown::HashSet;
+use chrono::Datelike;
+use cite_rank::CiteRankScore;
+use serde::{Deserialize, Serialize};
 
-pub mod cite_rank;
-pub mod data_deal;
-pub mod types;
+mod cite_rank;
+mod data_deal;
+mod gpt;
+mod types;
+
+pub use async_openai::types::ChatCompletionResponseStream;
+pub use gpt::gen_review;
 
 pub const CONCURRENCY: usize = 40;
 const YEAR: i32 = 2024;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LiteratureRet {
+    pub doi: String,
+    pub title: String,
+    pub author: String,
+    pub year: Option<i32>,
+    pub refs: Vec<String>,
+    pub score: f64,
+}
 
 pub async fn doi_to_best_literatures(
     doi: String,
@@ -13,26 +29,41 @@ pub async fn doi_to_best_literatures(
     best_num: usize,
     alpha: f64,
     decay_factor: f64,
-) -> Vec<types::BriefLiterature> {
+) -> Vec<LiteratureRet> {
     let lits = data_deal::extend(doi, extend_num, CONCURRENCY).await;
 
     let mut cite_rank = cite_rank::CiteRankBuilder::new(lits, alpha, decay_factor).build();
     cite_rank.renew_iteration(30);
-    let best_lits = cite_rank.best_literatures(best_num).await;
-
-    let best_dois: HashSet<String> = best_lits.iter().map(|lit| lit.doi.clone()).collect();
-
-    best_lits
+    let best_lit_scores = cite_rank
+        .cite_rank_scores()
         .into_iter()
-        .map(|mut lit| {
+        .take(best_num)
+        .collect();
+    scores_to_lit_rets(best_lit_scores).await
+}
+
+async fn scores_to_lit_rets(lit_socres: Vec<CiteRankScore>) -> Vec<LiteratureRet> {
+    let dois = lit_socres
+        .iter()
+        .map(|lit| lit.doi.clone())
+        .collect::<Vec<_>>();
+    let lits = data_deal::query_dois(&dois).await;
+    lits.into_iter()
+        .zip(lit_socres)
+        .map(|(mut lit, score)| {
             lit.refs = lit
                 .refs
-                .iter()
-                // 仅保留在best_dois中存在的引用
-                .filter(|ref_| best_dois.contains(&ref_.doi as &str))
-                .cloned()
+                .into_iter()
+                .filter(|ref_| dois.contains(&ref_.doi))
                 .collect();
-            lit.into()
+            LiteratureRet {
+                doi: lit.doi,
+                title: lit.title,
+                author: lit.author,
+                year: lit.date.map(|date| date.year()),
+                refs: lit.refs.iter().map(|ref_| ref_.doi.clone()).collect(),
+                score: score.score,
+            }
         })
         .collect()
 }

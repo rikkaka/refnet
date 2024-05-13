@@ -15,8 +15,8 @@ type Data = HashMap<Doi, Fields>;
 
 #[derive(Debug)]
 pub struct CiteRankScore {
-    doi: Doi,
-    score: f64,
+    pub doi: Doi,
+    pub score: f64,
 }
 
 pub struct CiteRankBuilder {
@@ -135,17 +135,4 @@ impl CiteRank {
         scores.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());
         scores
     }
-
-    pub async fn best_literatures(&self, num: usize) -> Vec<Literature> {
-        let scores = self.cite_rank_scores();
-        let dois: Vec<Doi> = scores.into_iter().take(num).map(|s| s.doi).collect();
-        let lits = crate::data_deal::query_dois(&dois).await;
-        lits
-    }
 }
-
-// async fn best_literatures(scores: Vec<CiteRankScore>, num: usize) -> Vec<Literature> {
-//     let dois: Vec<Doi> = scores.into_iter().take(num).map(|s| s.doi).collect();
-//     let lits = crate::data_deal::query_dois(&dois).await;
-//     lits
-// }

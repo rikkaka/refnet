@@ -1,36 +1,39 @@
 <template>
   <el-config-provider namespace="ep">
     <div class="search-container">
+      <Params v-model="params" @search="search" />
       <el-input placeholder="请输入文献DOI" v-model="doi" class="search-input">{{ doi }}</el-input>
-      <el-button type="primary" @click="search" class="search-button">
+      <el-button type="primary" @click="search" :icon="Search" :loading="isLoading">
         检索
       </el-button>
-      <span v-if="isLoading" class="spinner"></span>
     </div>
 
-    <div class="params-container">
-      <span>扩展次数：</span>
-      <el-input v-model="extend_num" class="param-input">{{ extend_num }}</el-input>
+    <el-tabs type="border-card" class="body-container">
+      <el-tab-pane label="关系网络">
+        <GraphChart :nodes="searchResult" :key="searchResult" />
+      </el-tab-pane>
+      <el-tab-pane label="文献综述">
+        <div class="body-container">
+          <el-button type="primary" @click="get_review" round>
+            获取文献综述
+          </el-button>
+          <p class="search-result" style="width: 90vw;">{{ review }}</p>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
 
-      <span>关键文献个数：</span>
-      <el-input v-model="best_num" class="param-input">{{ best_num }}</el-input>
-
-      <span>平衡因子：</span>
-      <el-input v-model="alpha" class="param-input">{{ alpha }}</el-input>
-
-      <span>时间衰减速率：</span>
-      <el-input v-model="decay_factor" class="param-input">{{ decay_factor }}</el-input>
-    </div>
-
-    <div class="graph-container">
-      <GraphChart :nodes="searchResult" :key="searchResult"/>
-    </div>
   </el-config-provider>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { Search } from "@element-plus/icons-vue"
+
+import GraphChart from './components/GraphChart.vue';
+import Params from './components/Params.vue';
+
 const apiURL = import.meta.env.VITE_API_URL;
+const wsURL = import.meta.env.VITE_WS_URL;
 
 const doi = ref('10.1038/s41586-024-07336-w');
 const alpha = ref(0.9);
@@ -38,12 +41,21 @@ const decay_factor = ref(0.08);
 const extend_num = ref(500);
 const best_num = ref(20);
 
+const params = ref({
+  alpha: alpha,
+  decay_factor: decay_factor,
+  extend_num: extend_num,
+  best_num: best_num
+})
+
 const searchResult = ref([]);
+const review = ref('');
 
 const isLoading = ref(false);
 
 async function search() {
   isLoading.value = true;
+  review.value = '';
   const url = apiURL + '/refnet/doi';
   const params = {
     doi: doi.value,
@@ -66,15 +78,39 @@ async function search() {
   }
 };
 
-import GraphChart from './components/GraphChart.vue';
+async function get_review() {
+  review.value = '';
+  const dois = searchResult.value.map(node => node.doi);
+  const url = wsURL + '/refnet/review';
+  const params = {
+    dois: dois,
+  }
+  const queryString = new URLSearchParams(params).toString();
+
+  const ws = new WebSocket(`${url}?${queryString}`);
+
+  ws.onopen = function () {
+    console.log('WebSocket Client Connected');
+  };
+
+  ws.onmessage = function (e) {
+    console.log("Received: '" + e.data + "'");
+    review.value += e.data;
+  };
+
+  ws.onerror = function (e) {
+    console.log("Error: '" + e.data + "'");
+  };
+
+}
 
 </script>
 
 
-<style scoped>
+<style>
 .search-container {
   display: grid;
-  grid-template-columns: 320px 100px 40px;
+  grid-template-columns: 50px 320px 100px 40px;
   align-items: center;
   justify-content: center;
   /* padding-left: 10px; */
@@ -100,12 +136,7 @@ import GraphChart from './components/GraphChart.vue';
 }
 
 .search-button {
-  width: 100px;
-  transition: background-color 0.3s ease;
-}
-
-.search-button:hover {
-  background-color: #1e5d14;
+  width: 80px;
 }
 
 .search-result {
@@ -113,33 +144,10 @@ import GraphChart from './components/GraphChart.vue';
   line-height: 1.2;
 }
 
-.graph-container {
+.body-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: #1e5d14 solid 1px;
-}
-
- /* 会旋转的spinner */
-.spinner {
-  border-radius: 50%;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s infinite linear;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.hide {
-  display: none;
 }
 </style>

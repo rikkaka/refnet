@@ -30,7 +30,11 @@ async fn inner_main() {
     let acceptor = TcpListener::new(local_addr).bind().await;
 
     let router = Router::new()
-        .push(Router::with_path("refnet").push(Router::with_path("doi").get(controllers::from_doi)))
+        .push(
+            Router::with_path("refnet")
+                .push(Router::with_path("doi").get(controllers::best_literatures_from_doi))
+                .push(Router::with_path("review").goal(controllers::literatures_to_review)),
+        )
         .push(
             Router::new()
                 .path("<**refnet>")
