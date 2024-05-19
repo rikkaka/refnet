@@ -32,7 +32,7 @@ async fn gen(system: &str, user: &str) -> ChatCompletionResponseStream {
     ];
 
     let request = CreateChatCompletionRequestArgs::default()
-        .model("gpt-3.5-turbo")
+        .model("gpt-4o")
         .temperature(0.1)
         .messages(messages)
         .build()
@@ -87,10 +87,13 @@ pub async fn gen_review(dois: &[Doi]) -> ChatCompletionResponseStream {
     - abstract (string | null): The abstract of the article, if available. If the abstract is null, you should utilize the information contained in the title and your own knowledge to infer the context and content of the article.
     - references ([integer]): An array of numbers corresponding to the articles cited by this one.
     
-    Based on the information provided, your task is to write a literature review in the style of Chinese academic papers. The output should be coherent, well-structured, and fully in Chinese. When organizing the review, consider the chronological order of the articles based on their publication year to highlight the development and evolution of the research topic. When the abstract is missing, use the title and relevant contextual knowledge to bridge gaps and ensure a comprehensive understanding of each article's contributions. The review should integrate the provided data, discuss the significance and impact of the cited works, and link the articles together in a meaningful academic discourse. Don't mention the title of articles in the review. Be sure to follow academic integrity and appropriately acknowledge the contributions of cited works.
+    Based on the information provided, your task is to write a literature review in the style of Chinese academic papers. The output should be coherent, well-structured, and fully in Chinese. When organizing the review, consider the chronological order of the articles based on their publication year to highlight the development and evolution of the research topic. When the abstract is missing, use the title and relevant contextual knowledge to bridge gaps and ensure a comprehensive understanding of each article's contributions. The review should integrate the provided data, discuss the significance and impact of the cited works, and link the articles together in a meaningful academic discourse. Be sure to follow academic integrity and appropriately acknowledge the contributions of cited works.
 IMPORTANT: Follow the style of Chinese academic papers!
-IMPORTANT: Use as many as provided articles as possible, ensuring a comprehensive understanding over the articles! The longer the literature review, the better!";
-    let user = serde_json::to_string(&lits_to_litgpts(lits)).unwrap();
+IMPORTANT: Don't mention the missing of abstracts!
+IMPORTANT: The output should be in plain-text!";
+    let mut litgpts = lits_to_litgpts(lits);
+    litgpts.sort_by(|a, b| a.year.cmp(&b.year));
+    let user = serde_json::to_string(&litgpts).unwrap();
 
     gen(system, &user).await
 }

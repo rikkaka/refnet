@@ -1,28 +1,25 @@
 <template>
-  <el-config-provider namespace="ep">
-    <div class="search-container">
-      <Params v-model="params" @search="search" />
-      <el-input placeholder="请输入文献DOI" v-model="doi" class="search-input">{{ doi }}</el-input>
-      <el-button type="primary" @click="search" :icon="Search" :loading="isLoading">
-        检索
-      </el-button>
-    </div>
+  <div class="search-container">
+    <Params v-model="params" @search="search" />
+    <el-input placeholder="请输入文献DOI" v-model="doi" class="search-input">{{ doi }}</el-input>
+    <el-button type="primary" @click="search" :icon="Search" :loading="isLoading">
+      检索
+    </el-button>
+  </div>
 
-    <el-tabs type="border-card" class="body-container">
-      <el-tab-pane label="关系网络">
-        <GraphChart :nodes="searchResult" :key="searchResult" />
-      </el-tab-pane>
-      <el-tab-pane label="文献综述">
-        <div class="body-container">
-          <el-button type="primary" @click="get_review" round>
-            获取文献综述
-          </el-button>
-          <p class="search-result" style="width: 90vw;">{{ review }}</p>
-        </div>
-      </el-tab-pane>
-    </el-tabs>
-
-  </el-config-provider>
+  <el-tabs type="border-card" class="body-container">
+    <el-tab-pane label="关系网络">
+      <GraphChart :nodes="searchResult" :key="searchResult" />
+    </el-tab-pane>
+    <el-tab-pane label="文献综述">
+      <div class="body-container">
+        <el-button type="primary" @click="get_review" round>
+          获取文献综述
+        </el-button>
+        <p class="search-result" style="width: 90;">{{ review }}</p>
+      </div>
+    </el-tab-pane>
+  </el-tabs>
 </template>
 
 <script setup>
@@ -147,7 +144,8 @@ async function get_review() {
 .body-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
+  height: 100vh;
 }
 </style>
