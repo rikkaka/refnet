@@ -96,7 +96,7 @@ function createChart() {
           force: {
             repulsion: 400,
             gravity: 0.1,
-            edgeLength: 100
+            edgeLength: 105
           },
           lineStyle: {
             color: 'grey',
@@ -135,6 +135,6 @@ function createChart() {
   align-items: center;
   width: 90vw;
   height: 700px;
-  border: #1e5d14 solid 1px;
+  border: grey solid 1px;
 }
 </style>

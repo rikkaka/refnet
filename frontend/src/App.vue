@@ -1,8 +1,15 @@
 <template>
   <div class="search-container">
     <Params v-model="params" @search="search" />
-    <el-input placeholder="请输入文献DOI" v-model="doi" class="search-input">{{ doi }}</el-input>
-    <el-button type="primary" @click="search" :icon="Search" :loading="isLoading">
+    <el-input placeholder="请输入文献DOI" v-model="doi" class="search-input">{{
+      doi
+    }}</el-input>
+    <el-button
+      type="primary"
+      @click="search"
+      :icon="Search"
+      :loading="isLoading"
+    >
       检索
     </el-button>
   </div>
@@ -13,26 +20,31 @@
     </el-tab-pane>
     <el-tab-pane label="文献综述">
       <div class="body-container">
-        <el-button type="primary" @click="get_review" round>
+        <el-button type="primary" style="margin-bottom: 12px" @click="get_review" round>
           获取文献综述
         </el-button>
-        <p class="search-result" style="width: 90;">{{ review }}</p>
+        <el-text
+          size="large"
+          style="width: 50%"
+        >
+          {{ review }}</el-text
+        >
       </div>
     </el-tab-pane>
   </el-tabs>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { Search } from "@element-plus/icons-vue"
+import { ref } from "vue";
+import { Search } from "@element-plus/icons-vue";
 
-import GraphChart from './components/GraphChart.vue';
-import Params from './components/Params.vue';
+import GraphChart from "./components/GraphChart.vue";
+import Params from "./components/Params.vue";
 
 const apiURL = import.meta.env.VITE_API_URL;
 const wsURL = import.meta.env.VITE_WS_URL;
 
-const doi = ref('10.1038/s41586-024-07336-w');
+const doi = ref("10.1038/s41586-024-07336-w");
 const alpha = ref(0.9);
 const decay_factor = ref(0.08);
 const extend_num = ref(500);
@@ -42,18 +54,18 @@ const params = ref({
   alpha: alpha,
   decay_factor: decay_factor,
   extend_num: extend_num,
-  best_num: best_num
-})
+  best_num: best_num,
+});
 
 const searchResult = ref([]);
-const review = ref('');
+const review = ref("");
 
 const isLoading = ref(false);
 
 async function search() {
   isLoading.value = true;
-  review.value = '';
-  const url = apiURL + '/refnet/doi';
+  review.value = "";
+  const url = apiURL + "/refnet/doi";
   const params = {
     doi: doi.value,
     extend_num: extend_num.value,
@@ -69,25 +81,25 @@ async function search() {
     const data = await response.json();
     searchResult.value = data;
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   } finally {
     isLoading.value = false;
   }
-};
+}
 
 async function get_review() {
-  review.value = '';
-  const dois = searchResult.value.map(node => node.doi);
-  const url = wsURL + '/refnet/review';
+  review.value = "";
+  const dois = searchResult.value.map((node) => node.doi);
+  const url = wsURL + "/refnet/review";
   const params = {
     dois: dois,
-  }
+  };
   const queryString = new URLSearchParams(params).toString();
 
   const ws = new WebSocket(`${url}?${queryString}`);
 
   ws.onopen = function () {
-    console.log('WebSocket Client Connected');
+    console.log("WebSocket Client Connected");
   };
 
   ws.onmessage = function (e) {
@@ -98,11 +110,8 @@ async function get_review() {
   ws.onerror = function (e) {
     console.log("Error: '" + e.data + "'");
   };
-
 }
-
 </script>
-
 
 <style>
 .search-container {
