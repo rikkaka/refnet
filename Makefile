@@ -1,7 +1,12 @@
-.PHONY: run
-run:
-	@echo "Starting frontend and backend..."
-	# Start the frontend
+.PHONY: dev build
+dev:
 	cd frontend && pnpm i && pnpm run dev &
-	# Start the backend
+	cargo run --release --bin refnet_server
+
+build:
+	cd frontend && pnpm i && pnpm run build &
+	cargo build --release --bin refnet_server
+
+run:
+	cd frontend && pnpm i && pnpm run preview &
 	cargo run --release --bin refnet_server

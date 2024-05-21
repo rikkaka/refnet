@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <img src="./assets/logo.png" alt="logo" />
+    <img src="./assets/logo.png" alt="logo" style="width: 100px; height: 80px"/>
     <Params v-model="params" @search="search" />
     <el-input placeholder="请输入文献DOI" v-model="doi" class="search-input">{{
       doi
@@ -26,7 +26,7 @@
         </el-button>
         <el-text
           size="large"
-          style="width: 50%"
+          style="width: 60%"
         >
           {{ review }}</el-text
         >
@@ -117,7 +117,7 @@ async function get_review() {
 <style>
 .search-container {
   display: grid;
-  grid-template-columns: 100px 50px 320px 100px 40px;
+  grid-template-columns: 150px 50px 320px 100px 40px;
   align-items: center;
   justify-content: center;
   /* padding-left: 10px; */

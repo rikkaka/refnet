@@ -96,13 +96,14 @@ function createChart() {
           force: {
             repulsion: 400,
             gravity: 0.1,
-            edgeLength: 105
+            edgeLength: 120,
           },
           lineStyle: {
             color: 'grey',
             opacity: 0.5, 
-            width: 2,
-            // curveness: 0.
+            width: 1,
+            curveness: 0.2,
+            type: 'dashed'
           },
           emphasis: {
             focus: 'adjacency', 
