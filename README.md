@@ -1,5 +1,5 @@
 # Refnet
-In this project, I use Crossref API to fetch the metadata of academic papers, cache them in a local sqlite database, and calculate the importance of papers based on the [CiteRank algorithm](https://iopscience.iop.org/article/10.1088/1742-5468/2007/06/P06010). I also write a web UI to show the most important articles under the reference network of a given paper. You can easily generate a literature review based on these papers with an OpenAI api key.
+In this project, I use [Crossref API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/) to fetch the metadata of academic papers, cache them in a local sqlite database, and calculate the importance of papers based on the [CiteRank algorithm](https://iopscience.iop.org/article/10.1088/1742-5468/2007/06/P06010). I also write a web UI to visualize the most important articles under the reference network of a given paper. You can also generate a literature review  based on these papers with an OpenAI api key easily.
 
 ## Pre-requisites
 - rustc and cargo
