@@ -5,7 +5,6 @@ use crate::types::{Literature, Ref};
 
 fn create_client() -> Crossref {
     let client = Crossref::builder()
-        .proxy("http://127.0.0.1:7890")
         .polite("dsywh123@gmail.com")
         .build()
         .unwrap();

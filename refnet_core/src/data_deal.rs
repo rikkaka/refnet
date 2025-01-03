@@ -7,6 +7,7 @@ use cached::proc_macro::cached;
 use flume::{Receiver, Sender};
 use hashbrown::HashSet;
 use itertools::Itertools;
+use log::trace;
 use tokio::task;
 
 use crate::types::{Doi, Literature};
@@ -32,6 +33,7 @@ async fn query_doi_crossref(doi: Doi) -> Option<Literature> {
 }
 
 pub async fn query_doi(doi: &str) -> Option<Literature> {
+    trace!("querying doi: {}", doi);
     // query database at first
     let literature = query_doi_sql(doi).await;
     if literature.is_some() {
@@ -40,7 +42,9 @@ pub async fn query_doi(doi: &str) -> Option<Literature> {
 
     // query crossref
     let doi = Doi::from(doi);
-    query_doi_crossref(doi).await
+    let lit = query_doi_crossref(doi).await;
+    trace!("query result: {:?}", lit);
+    lit
 }
 
 pub async fn query_dois(dois: &[Doi]) -> Vec<Literature> {
@@ -70,7 +74,6 @@ async fn query_doi_crossref_worker(
     working_workers_counter: Arc<AtomicUsize>,
 ) {
     while let Ok(doi) = doi_rx.recv_async().await {
-        println!("querying doi: {}", doi);
         working_workers_counter.fetch_add(1, Ordering::Relaxed);
         let lit = query_doi(&doi).await;
         // lit_tx.send(lit).unwrap();
