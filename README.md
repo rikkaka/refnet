@@ -22,3 +22,8 @@ make dev
 make run
 ```
 Then visit to your `LOCAL_ADDR` in the browser. 
+
+## Preview
+![](preview1.png)
+
+![](preview2.png)

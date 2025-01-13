@@ -2,7 +2,7 @@
   <div class="search-container">
     <img src="./assets/logo.png" alt="logo" style="width: 100px; height: 80px"/>
     <Params v-model="params" @search="search" />
-    <el-input placeholder="请输入文献DOI" v-model="doi" class="search-input">{{
+    <el-input placeholder="Please enter the literature DOI" v-model="doi" class="search-input">{{
       doi
     }}</el-input>
     <el-button
@@ -11,18 +11,18 @@
       :icon="Search"
       :loading="isLoading"
     >
-      检索
+      Search
     </el-button>
   </div>
 
   <el-tabs type="border-card" class="body-container">
-    <el-tab-pane label="关系网络">
+    <el-tab-pane label="Relationship Network">
       <GraphChart :nodes="searchResult" :key="searchResult" />
     </el-tab-pane>
-    <el-tab-pane label="文献综述">
+    <el-tab-pane label="Literature Review">
       <div class="body-container">
         <el-button type="primary" style="margin-bottom: 12px" @click="get_review" round>
-          获取文献综述
+          Generate a literature review
         </el-button>
         <el-text
           size="large"

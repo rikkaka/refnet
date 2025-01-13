@@ -2,16 +2,16 @@
     <el-button @click="dialogVisible = true" :icon = "Setting" circle></el-button>
     <el-dialog v-model="dialogVisible" title="Tips" width="500">
         <div class="params-container">
-      <span>扩展次数：</span>
+      <span>Number of expansions:</span>
       <el-input v-model="params.extend_num" class="param-input">{{ extend_num }}</el-input>
 
-      <span>关键文献个数：</span>
+      <span>Number of key documents:</span>
       <el-input v-model="params.best_num" class="param-input">{{ best_num }}</el-input>
 
-      <span>平衡因子：</span>
+      <span>Balance factor:</span>
       <el-input v-model="params.alpha" class="param-input">{{ alpha }}</el-input>
 
-      <span>时间衰减速率：</span>
+      <span>Time decay rate:</span>
       <el-input v-model="params.decay_factor" class="param-input">{{ decay_factor }}</el-input>
     </div>
     <template #footer>
